@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda Inteligente</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0f0f10;
+            color: white;
+        }
+
+        .app {
+            max-width: 760px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #151517;
+        }
+
+        .header {
+            padding: 18px 20px;
+            background: linear-gradient(135deg, #7f1d1d, #991b1b);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .header p {
+            margin: 6px 0 0;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .acciones-top {
+            display: flex;
+            gap: 10px;
+            padding: 12px 16px;
+            background: #18181b;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            flex-wrap: wrap;
+        }
+
+        .acciones-top a {
+            text-decoration: none;
+            color: white;
+            background: #27272a;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .chat {
+            flex: 1;
+            padding: 18px 14px 110px;
+            overflow-y: auto;
+        }
+
+        .fila {
+            display: flex;
+            margin-bottom: 14px;
+        }
+
+        .fila.user {
+            justify-content: flex-end;
+        }
+
+        .fila.bot {
+            justify-content: flex-start;
+        }
+
+        .burbuja {
+            max-width: 80%;
+            padding: 12px 14px;
+            border-radius: 16px;
+            line-height: 1.45;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .burbuja.user {
+            background: #b91c1c;
+            color: white;
+            border-bottom-right-radius: 6px;
+        }
+
+        .burbuja.bot {
+            background: #27272a;
+            color: #f4f4f5;
+            border-bottom-left-radius: 6px;
+        }
+
+        .bot-gasto { border-left: 4px solid #ef4444; }
+        .bot-ingreso { border-left: 4px solid #22c55e; }
+        .bot-habito { border-left: 4px solid #f59e0b; }
+        .bot-actividad { border-left: 4px solid #3b82f6; }
+        .bot-consulta { border-left: 4px solid #a855f7; }
+        .bot-nota { border-left: 4px solid #71717a; }
+
+        .etiqueta-tipo {
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            opacity: 0.75;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #111113;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .input-wrap {
+            max-width: 760px;
+            margin: 0 auto;
+            display: flex;
+            gap: 10px;
+            padding: 14px;
+        }
+
+        .input-wrap input {
+            flex: 1;
+            background: #232326;
+            color: white;
+            border: none;
+            outline: none;
+            border-radius: 14px;
+            padding: 14px 16px;
+            font-size: 15px;
+        }
+
+        .input-wrap button {
+            background: #b91c1c;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 0 18px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .input-wrap button:hover {
+            background: #dc2626;
+        }
+
+        .estado {
+            font-size: 12px;
+            color: #a1a1aa;
+            padding: 0 18px 10px;
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 640px) {
+            .burbuja {
+                max-width: 88%;
+            }
+
+            .input-wrap {
+                padding: 10px;
+            }
+
+            .input-wrap button {
+                padding: 0 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="header">
+            <h1>Agenda Inteligente</h1>
+            <p>Registrá actividades, gastos, hábitos y hacé consultas en formato chat.</p>
+        </div>
+
+        <div class="acciones-top">
+            <a href="/historial">Historial</a>
+            <a href="/resumen">Resumen</a>
+            <a href="/exportar-excel">Exportar Excel</a>
+        </div>
+
+        <div class="chat" id="chat">
+            {% if mensajes %}
+                {{ mensajes | safe }}
+            {% else %}
+                <div class="fila bot">
+                    <div class="burbuja bot bot-consulta">
+                        <div class="etiqueta-tipo">Asistente</div>
+                        Hola. Ya podés registrar cosas como:
+                        - gasto 3500 en comida
+                        - cobré 250000
+                        - fui al gym 2
+                        - fumé 3
+                        - cuánto gasté hoy
+                        - resumen
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="input-area">
+        <form id="chatForm">
+            <div class="input-wrap">
+                <input
+                    type="text"
+                    id="texto"
+                    name="texto"
+                    placeholder="Escribí un mensaje..."
+                    autocomplete="off"
+                    required
+                >
+                <button type="submit">Enviar</button>
+            </div>
+            <div class="estado" id="estado"></div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById("chatForm");
+        const input = document.getElementById("texto");
+        const chat = document.getElementById("chat");
+        const estado = document.getElementById("estado");
+
+        function scrollAlFinal() {
+            chat.scrollTop = chat.scrollHeight;
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        function escaparHtml(texto) {
+            const div = document.createElement("div");
+            div.textContent = texto;
+            return div.innerHTML;
+        }
+
+        function claseBotPorTipo(tipo) {
+            if (tipo === "gasto") return "bot-gasto";
+            if (tipo === "ingreso") return "bot-ingreso";
+            if (tipo === "habito") return "bot-habito";
+            if (tipo === "actividad") return "bot-actividad";
+            if (tipo === "consulta") return "bot-consulta";
+            return "bot-nota";
+        }
+
+        function etiquetaPorTipo(tipo) {
+            if (tipo === "gasto") return "Gasto";
+            if (tipo === "ingreso") return "Ingreso";
+            if (tipo === "habito") return "Hábito";
+            if (tipo === "actividad") return "Actividad";
+            if (tipo === "consulta") return "Consulta";
+            return "Nota";
+        }
+
+        function agregarMensajeUsuario(texto) {
+            const bloque = `
+                <div class="fila user">
+                    <div class="burbuja user">${escaparHtml(texto)}</div>
+                </div>
+            `;
+            chat.insertAdjacentHTML("beforeend", bloque);
+            scrollAlFinal();
+        }
+
+        function agregarMensajeBot(tipo, texto) {
+            const clase = claseBotPorTipo(tipo);
+            const etiqueta = etiquetaPorTipo(tipo);
+
+            const bloque = `
+                <div class="fila bot">
+                    <div class="burbuja bot ${clase}">
+                        <div class="etiqueta-tipo">${etiqueta}</div>
+                        ${escaparHtml(texto)}
+                    </div>
+                </div>
+            `;
+            chat.insertAdjacentHTML("beforeend", bloque);
+            scrollAlFinal();
+        }
+
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            const texto = input.value.trim();
+            if (!texto) return;
+
+            agregarMensajeUsuario(texto);
+            input.value = "";
+            input.focus();
+            estado.textContent = "Enviando...";
+
+            const formData = new FormData();
+            formData.append("texto", texto);
+
+            try {
+                const response = await fetch("/api/chat", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.ok) {
+                    agregarMensajeBot(data.tipo, data.respuesta);
+                    estado.textContent = "";
+                } else {
+                    agregarMensajeBot("nota", "Hubo un problema al procesar el mensaje.");
+                    estado.textContent = "Error.";
+                }
+            } catch (error) {
+                agregarMensajeBot("nota", "No pude conectar con el servidor.");
+                estado.textContent = "Sin conexión con el servidor.";
+            }
+        });
+
+        scrollAlFinal();
+    </script>
+</body>
+</html>
