@@ -38,3 +38,39 @@ def construir_contexto_del_dia(extras: Dict[str, Any] | None = None) -> Dict[str
     contexto = construir_contexto_base()
     contexto = aplicar_contexto_manual(contexto, extras)
     return contexto
+
+def interpretar_contexto_manual_desde_texto(texto: str):
+    texto = (texto or "").lower().strip()
+
+    eventos = []
+    tipo_dia = None
+    es_exigente = False
+
+    if "facultad" in texto or "cursada" in texto or "clase" in texto:
+        tipo_dia = "facultad"
+        eventos.append("facultad")
+        es_exigente = True
+
+    elif "trabajo" in texto or "laburo" in texto or "turno" in texto:
+        tipo_dia = "trabajo"
+        eventos.append("trabajo")
+        es_exigente = True
+
+    elif "guardia" in texto or "bomberos" in texto or "cuartel" in texto:
+        tipo_dia = "guardia"
+        eventos.append("guardia")
+        es_exigente = True
+
+    elif "libre" in texto or "descanso" in texto:
+        tipo_dia = "libre"
+        eventos.append("libre")
+        es_exigente = False
+
+    if not tipo_dia:
+        return None
+
+    return {
+        "tipo_dia": tipo_dia,
+        "eventos": eventos,
+        "es_exigente": es_exigente
+    }
