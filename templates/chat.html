@@ -9,26 +9,38 @@
             box-sizing: border-box;
         }
 
-        body {
+        html, body {
             margin: 0;
+            padding: 0;
+            height: 100%;
             font-family: Arial, sans-serif;
-            background: #0f0f10;
+            background: #0b0b0d;
             color: white;
+        }
+
+        body {
+            overflow: hidden;
         }
 
         .app {
             max-width: 760px;
+            height: 100dvh;
             margin: 0 auto;
-            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background: #151517;
+            background: #131316;
+            border-left: 1px solid rgba(255,255,255,0.05);
+            border-right: 1px solid rgba(255,255,255,0.05);
         }
 
         .header {
-            padding: 18px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            padding: 16px 18px 12px;
             background: linear-gradient(135deg, #7f1d1d, #991b1b);
             border-bottom: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.18);
         }
 
         .header h1 {
@@ -44,8 +56,8 @@
 
         .acciones-top {
             display: flex;
-            gap: 10px;
-            padding: 12px 16px;
+            gap: 8px;
+            padding: 10px 14px;
             background: #18181b;
             border-bottom: 1px solid rgba(255,255,255,0.06);
             flex-wrap: wrap;
@@ -55,15 +67,33 @@
             text-decoration: none;
             color: white;
             background: #27272a;
-            padding: 10px 14px;
+            padding: 9px 12px;
             border-radius: 10px;
-            font-size: 14px;
+            font-size: 13px;
+            transition: 0.2s ease;
+        }
+
+        .acciones-top a:hover {
+            background: #333339;
         }
 
         .chat {
             flex: 1;
-            padding: 18px 14px 110px;
             overflow-y: auto;
+            padding: 16px 12px 14px;
+            scroll-behavior: smooth;
+            background:
+                radial-gradient(circle at top, rgba(127,29,29,0.10), transparent 25%),
+                #131316;
+        }
+
+        .chat::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat::-webkit-scrollbar-thumb {
+            background: #2b2b31;
+            border-radius: 999px;
         }
 
         .fila {
@@ -80,16 +110,17 @@
         }
 
         .burbuja {
-            max-width: 80%;
+            max-width: 82%;
             padding: 12px 14px;
-            border-radius: 16px;
-            line-height: 1.45;
+            border-radius: 18px;
+            line-height: 1.5;
             white-space: pre-wrap;
             word-wrap: break-word;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.18);
         }
 
         .burbuja.user {
-            background: #b91c1c;
+            background: linear-gradient(135deg, #b91c1c, #dc2626);
             color: white;
             border-bottom-right-radius: 6px;
         }
@@ -117,11 +148,11 @@
         }
 
         .input-area {
-            position: fixed;
+            position: sticky;
             bottom: 0;
-            left: 0;
-            right: 0;
-            background: #111113;
+            z-index: 30;
+            background: rgba(17, 17, 19, 0.96);
+            backdrop-filter: blur(10px);
             border-top: 1px solid rgba(255,255,255,0.08);
         }
 
@@ -130,45 +161,73 @@
             margin: 0 auto;
             display: flex;
             gap: 10px;
-            padding: 14px;
+            padding: 12px;
         }
 
         .input-wrap input {
             flex: 1;
             background: #232326;
             color: white;
-            border: none;
+            border: 1px solid rgba(255,255,255,0.06);
             outline: none;
-            border-radius: 14px;
+            border-radius: 16px;
             padding: 14px 16px;
             font-size: 15px;
+            transition: border 0.2s ease, background 0.2s ease;
+        }
+
+        .input-wrap input:focus {
+            border: 1px solid rgba(239,68,68,0.5);
+            background: #2a2a2f;
         }
 
         .input-wrap button {
-            background: #b91c1c;
+            background: linear-gradient(135deg, #b91c1c, #dc2626);
             color: white;
             border: none;
-            border-radius: 14px;
+            border-radius: 16px;
             padding: 0 18px;
             font-size: 15px;
+            font-weight: bold;
             cursor: pointer;
+            transition: 0.2s ease;
         }
 
         .input-wrap button:hover {
-            background: #dc2626;
+            filter: brightness(1.05);
+        }
+
+        .input-wrap button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .estado {
             font-size: 12px;
             color: #a1a1aa;
-            padding: 0 18px 10px;
+            padding: 0 16px 12px;
             max-width: 760px;
             margin: 0 auto;
+            min-height: 18px;
+        }
+
+        .vacio {
+            text-align: center;
+            color: #d4d4d8;
+            padding: 20px 14px 10px;
+            font-size: 14px;
+            opacity: 0.9;
         }
 
         @media (max-width: 640px) {
+            .app {
+                max-width: 100%;
+                border: none;
+            }
+
             .burbuja {
                 max-width: 88%;
+                font-size: 15px;
             }
 
             .input-wrap {
@@ -176,7 +235,16 @@
             }
 
             .input-wrap button {
-                padding: 0 14px;
+                padding: 0 15px;
+            }
+
+            .acciones-top {
+                gap: 6px;
+            }
+
+            .acciones-top a {
+                font-size: 12px;
+                padding: 8px 10px;
             }
         }
     </style>
@@ -185,7 +253,7 @@
     <div class="app">
         <div class="header">
             <h1>Agenda Inteligente</h1>
-            <p>Registrá actividades, gastos, hábitos y hacé consultas en formato chat.</p>
+            <p>Registrá gastos, ingresos, hábitos, actividades y consultá tu día en formato chat.</p>
         </div>
 
         <div class="acciones-top">
@@ -198,37 +266,39 @@
             {% if mensajes %}
                 {{ mensajes | safe }}
             {% else %}
+                <div class="vacio">
+                    Probá mensajes como:
+                </div>
                 <div class="fila bot">
                     <div class="burbuja bot bot-consulta">
                         <div class="etiqueta-tipo">Asistente</div>
-                        Hola. Ya podés registrar cosas como:
-                        - gasto 3500 en comida
+                        - gaste 3500 en comida
                         - cobré 250000
-                        - fui al gym 2
+                        - fui al gym 2h
                         - fumé 3
                         - cuánto gasté hoy
-                        - resumen
+                        - cómo vengo hoy
                     </div>
                 </div>
             {% endif %}
         </div>
-    </div>
 
-    <div class="input-area">
-        <form id="chatForm">
-            <div class="input-wrap">
-                <input
-                    type="text"
-                    id="texto"
-                    name="texto"
-                    placeholder="Escribí un mensaje..."
-                    autocomplete="off"
-                    required
-                >
-                <button type="submit">Enviar</button>
-            </div>
-            <div class="estado" id="estado"></div>
-        </form>
+        <div class="input-area">
+            <form id="chatForm">
+                <div class="input-wrap">
+                    <input
+                        type="text"
+                        id="texto"
+                        name="texto"
+                        placeholder="Escribí un mensaje..."
+                        autocomplete="off"
+                        required
+                    >
+                    <button type="submit" id="btnEnviar">Enviar</button>
+                </div>
+                <div class="estado" id="estado"></div>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -236,10 +306,12 @@
         const input = document.getElementById("texto");
         const chat = document.getElementById("chat");
         const estado = document.getElementById("estado");
+        const btnEnviar = document.getElementById("btnEnviar");
 
         function scrollAlFinal() {
-            chat.scrollTop = chat.scrollHeight;
-            window.scrollTo(0, document.body.scrollHeight);
+            requestAnimationFrame(() => {
+                chat.scrollTop = chat.scrollHeight;
+            });
         }
 
         function escaparHtml(texto) {
@@ -301,7 +373,8 @@
             agregarMensajeUsuario(texto);
             input.value = "";
             input.focus();
-            estado.textContent = "Enviando...";
+            estado.textContent = "Procesando...";
+            btnEnviar.disabled = true;
 
             const formData = new FormData();
             formData.append("texto", texto);
@@ -311,6 +384,15 @@
                     method: "POST",
                     body: formData
                 });
+
+                if (!response.ok) {
+                    const textoError = await response.text();
+                    console.error("Error backend:", response.status, textoError);
+                    agregarMensajeBot("nota", "El servidor devolvió un error interno.");
+                    estado.textContent = "Error interno del servidor.";
+                    btnEnviar.disabled = false;
+                    return;
+                }
 
                 const data = await response.json();
 
@@ -322,8 +404,19 @@
                     estado.textContent = "Error.";
                 }
             } catch (error) {
+                console.error("Error de conexión:", error);
                 agregarMensajeBot("nota", "No pude conectar con el servidor.");
                 estado.textContent = "Sin conexión con el servidor.";
+            }
+
+            btnEnviar.disabled = false;
+            scrollAlFinal();
+        });
+
+        input.addEventListener("keydown", function(e) {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                form.requestSubmit();
             }
         });
 
