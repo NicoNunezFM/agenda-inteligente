@@ -46,7 +46,15 @@ def interpretar_texto(texto: str):
     duracion_minutos = extraer_duracion_minutos(texto_limpio)
 
     # GASTOS
-    if any(p in texto_limpio for p in ["gast", "compr", "pagué", "pague", "salida", "uber", "taxi", "bondi"]):
+    if any(p in texto_limpio for p in [
+        "gast", "compr", "pagué", "pague", "salida", "uber", "taxi", "bondi",
+        "colectivo", "tren", "sube", "transporte",
+        "comida", "almuerzo", "cena", "desayuno", "pizza", "hamburguesa",
+        "coca", "gaseosa", "bebida", "agua", "cerveza", "jugo",
+        "super", "mercado", "farmacia", "medicamento", "remedio",
+        "ropa", "remera", "pantalon", "pantalón", "zapatillas",
+        "celular", "cuota", "electronica", "electrónica", "tecnologia", "tecnología"
+    ]):
         if any(p in texto_limpio for p in ["super", "mercado"]):
             categoria = "supermercado"
         elif any(p in texto_limpio for p in ["comida", "almuerzo", "cena", "desayuno", "pizza", "hamburguesa"]):
@@ -107,8 +115,8 @@ def interpretar_texto(texto: str):
             "categoria": "distraccion",
             "detalle": texto.strip(),
             "monto": None,
-            "cantidad": None,  # 👈 CLAVE
-            "unidad": None,    # 👈 CLAVE
+            "cantidad": None,
+            "unidad": None,
             "duracion_minutos": duracion_minutos,
         }
 
@@ -119,19 +127,19 @@ def interpretar_texto(texto: str):
             "categoria": "gimnasio",
             "detalle": texto.strip(),
             "monto": None,
-            "cantidad": None,  # 👈 CLAVE
-            "unidad": None,    # 👈 CLAVE
+            "cantidad": None,
+            "unidad": None,
             "duracion_minutos": duracion_minutos,
         }
 
-    if any(p in texto_limpio for p in ["bomber", "guardia"]):
+    if any(p in texto_limpio for p in ["bomber", "guardia", "cuartel"]):
         return {
             "tipo": "actividad",
             "categoria": "bomberos",
             "detalle": texto.strip(),
             "monto": None,
-            "cantidad": None,  # 👈 CLAVE
-            "unidad": None,    # 👈 CLAVE
+            "cantidad": None,
+            "unidad": None,
             "duracion_minutos": duracion_minutos,
         }
 
@@ -141,11 +149,10 @@ def interpretar_texto(texto: str):
             "categoria": "estudio",
             "detalle": texto.strip(),
             "monto": None,
-            "cantidad": None,  # 👈 CLAVE
-            "unidad": None,    # 👈 CLAVE
+            "cantidad": None,
+            "unidad": None,
             "duracion_minutos": duracion_minutos,
         }
-        
 
     if any(p in texto_limpio for p in ["trabaj", "labur", "turno", "seguridad"]):
         return {
@@ -153,8 +160,8 @@ def interpretar_texto(texto: str):
             "categoria": "trabajo",
             "detalle": texto.strip(),
             "monto": None,
-            "cantidad": None,  # 👈 CLAVE
-            "unidad": None,    # 👈 CLAVE
+            "cantidad": None,
+            "unidad": None,
             "duracion_minutos": duracion_minutos,
         }
 
@@ -198,7 +205,6 @@ def es_consulta(texto_limpio: str):
         "analiza",
         "situacion", "situación",
         "ingres",
-        "gaste", "gasté",
         "detalle",
         "compar",
         "gasto mas", "gasto más",

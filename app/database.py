@@ -1,6 +1,8 @@
 import sqlite3
+from pathlib import Path
 
-DB_NAME = "agenda.db"
+BASE_DIR = Path(__file__).resolve().parent.parent
+DB_NAME = BASE_DIR / "agenda.db"
 
 
 def get_connection():

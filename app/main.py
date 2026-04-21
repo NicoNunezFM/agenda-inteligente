@@ -65,7 +65,10 @@ def api_chat(texto: str = Form(...)):
     # 0) Primero vemos si el mensaje define contexto manual
     # -------------------------------------------------
     from app.contexto import interpretar_contexto_manual_desde_texto
-    contexto_manual = interpretar_contexto_manual_desde_texto(texto_limpio)
+
+    contexto_manual = None
+    if texto_limpio.startswith("hoy "):
+        contexto_manual = interpretar_contexto_manual_desde_texto(texto_limpio)
 
     if contexto_manual:
         contexto_app.guardar_contexto_manual_hoy(
@@ -274,7 +277,10 @@ def procesar(request: Request, texto: str = Form(...)):
     conn = get_connection()
     cursor = conn.cursor()
     from app.contexto import interpretar_contexto_manual_desde_texto
-    contexto_manual = interpretar_contexto_manual_desde_texto(texto_limpio)
+
+    contexto_manual = None
+    if texto_limpio.startswith("hoy "):
+        contexto_manual = interpretar_contexto_manual_desde_texto(texto_limpio)
 
     if contexto_manual:
         contexto_app.guardar_contexto_manual_hoy(
