@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from openpyxl import Workbook
 import app.contexto as contexto_app
+from app.whatsapp import router as whatsapp_router
 from app.database import init_db, get_connection
 from app.parser import interpretar_texto, es_consulta, clasificar_productividad
 from app.inteligencia import analizar_dia, generar_texto_modo_dueno, responder_consulta_inteligente
@@ -16,6 +17,7 @@ from app.responses import (
     generar_respuesta_registro,
 )
 app = FastAPI()
+app.include_router(whatsapp_router)
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
