@@ -39,6 +39,10 @@ async def receive_webhook(request: Request):
         mensaje_data = value["messages"][0]
         numero = mensaje_data["from"]
 
+# Ajuste para números móviles de Argentina en entorno de prueba de Meta
+        if numero.startswith("549"):
+            numero = "54" + numero[3:]
+
         if mensaje_data.get("type") != "text":
             enviar_mensaje(numero, "Por ahora solo puedo procesar mensajes de texto.")
             return JSONResponse({"status": "ok"})
@@ -54,6 +58,9 @@ async def receive_webhook(request: Request):
         print("Error en webhook:", e)
         return JSONResponse({"status": "error", "detail": str(e)}, status_code=200)
 
+
+print("NUMERO RECIBIDO:", mensaje_data["from"])
+print("NUMERO AJUSTADO:", numero)
 
 def enviar_mensaje(numero: str, mensaje: str):
     url = f"https://graph.facebook.com/v23.0/{PHONE_NUMBER_ID}/messages"
